@@ -95,6 +95,7 @@ public class PlayerInputHandler : MonoBehaviour
                 if (Mathf.Abs(aimVec.x) > _controllerDeadzone || Mathf.Abs(aimVec.y) > _controllerDeadzone) {
                     Vector3 playerDirection = Vector3.right * aimVec.x + Vector3.forward * aimVec.y;
                     if(playerDirection.sqrMagnitude > 0.0f) {
+                        // TODO: Fix with PlayerMovementController.cs line 23
                         Quaternion newRotation = Quaternion.LookRotation(playerDirection, Vector3.up);
                         _aimRotation = newRotation;
                     }
