@@ -9,8 +9,11 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private float _screenTiltOffset;
 
     public float movementSpeed;
+    [SerializeField] private float _dampeningSpeed = 1;
 
     private Transform _mainCameraTransform;
+
+    private Vector3 _smoothDampVelocity = Vector3.zero;
 
     private void Awake() {
         _mainCameraTransform = Camera.main.transform;
@@ -22,7 +25,8 @@ public class PlayerMovementController : MonoBehaviour
             Vector3 moveForceVector = new Vector3(direction.x , 0, direction.y) * movementSpeed;
             moveForceVector = Quaternion.Euler(0, _mainCameraTransform.rotation.eulerAngles.y, 0) * moveForceVector;
             //_rigidBody.AddForce(moveForceVector, ForceMode.VelocityChange);
-            _rigidBody.velocity = moveForceVector;
+            // _rigidBody.velocity = Vector3.SmoothDamp(_rigidBody.velocity, moveForceVector, ref _smoothDampVelocity, _dampeningSpeed * Time.fixedDeltaTime);
+            _rigidBody.velocity = new Vector3(moveForceVector.x, _rigidBody.velocity.y, moveForceVector.z);
         }
 
         if(direction == Vector2.zero) {

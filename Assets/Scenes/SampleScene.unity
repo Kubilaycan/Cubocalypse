@@ -433,6 +433,7 @@ MonoBehaviour:
   _mouseAimOffset: 0.2
   _screenTiltOffset: 1.7
   movementSpeed: 5
+  _dampeningSpeed: 1.2
 --- !u!114 &409841735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1141,7 +1142,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1499,7 +1500,7 @@ MonoBehaviour:
   m_Follow: {fileID: 409841740}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 10
+    OrthographicSize: 15
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -1695,7 +1696,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 320912275309457826, guid: 84cc3f0b221d5ff48b99a978d162e0a3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 32
+      value: 32.000004
       objectReference: {fileID: 0}
     - target: {fileID: 320912275309457826, guid: 84cc3f0b221d5ff48b99a978d162e0a3, type: 3}
       propertyPath: m_LocalPosition.y

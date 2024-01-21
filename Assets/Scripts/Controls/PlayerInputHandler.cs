@@ -24,10 +24,13 @@ public class PlayerInputHandler : MonoBehaviour
     private Quaternion _aimRotation;
     private Vector3 _aimLookPoint;
     private float _shootValue;
+
+    private Transform _mainCameraTransform;
     
     void Awake()
     {
         _playerInputActions = new PlayerInputActions();
+        _mainCameraTransform = Camera.main.transform;
     }
     
     void OnEnable() {
@@ -71,6 +74,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnMovementPerformed(InputAction.CallbackContext context)
     {
+        Vector2 oldMovementVector = _movementVector;
+        Vector2 newMovementVector = context.ReadValue<Vector2>();
         _movementVector = context.ReadValue<Vector2>();
     }
 
@@ -96,6 +101,7 @@ public class PlayerInputHandler : MonoBehaviour
                     Vector3 playerDirection = Vector3.right * aimVec.x + Vector3.forward * aimVec.y;
                     if(playerDirection.sqrMagnitude > 0.0f) {
                         // TODO: Fix with PlayerMovementController.cs line 23
+                        playerDirection = Quaternion.Euler(0, _mainCameraTransform.rotation.eulerAngles.y, 0) * playerDirection;
                         Quaternion newRotation = Quaternion.LookRotation(playerDirection, Vector3.up);
                         _aimRotation = newRotation;
                     }
