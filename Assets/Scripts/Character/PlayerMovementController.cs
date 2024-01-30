@@ -46,7 +46,9 @@ public class PlayerMovementController : MonoBehaviour
 
     public void RotateCharacter(Vector3 lookPoint) {
         Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
-        transform.LookAt(heightCorrectedPoint + (transform.right * _mouseAimOffset * -1) + (Vector3.forward * _screenTiltOffset * -1));
+        Vector3 lookVector = heightCorrectedPoint + (_mainCameraTransform.right * _mouseAimOffset * -1) + (_mainCameraTransform.forward * _screenTiltOffset * -1);
+        Vector3 heightCorrectedLookVector = new Vector3(lookVector.x, transform.position.y, lookVector.z);
+        transform.LookAt(heightCorrectedLookVector);
     }
 
     public void IncreaseMovementSpeedByPercentage(float value) {

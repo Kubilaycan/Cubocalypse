@@ -12,12 +12,13 @@ public class Weapon : MonoBehaviour
 
     public Transform rightHandIKTarget;
     public Transform leftHandIKTarget;
+    public ParticleSystem muzzleFlashParticle;
 
     private bool _canShoot = true;
 
     public void Shoot() {
         if(_canShoot) {
-            Instantiate(_projectile, _projectileInstantiationLocation.position, _projectileInstantiationLocation.rotation *  Quaternion.Euler(0, Random.Range(-(100 - _accuracy), (100 -_accuracy)), 0));
+            StartCoroutine(SpawnProjectileParent());
             _firingAudioSource.PlayOneShot(_firingAudioSource.clip);
             _canShoot = false;
             StartCoroutine(ProjectileDelay());
@@ -41,5 +42,11 @@ public class Weapon : MonoBehaviour
     IEnumerator ProjectileDelay() {
         yield return new WaitForSeconds(_projectileDelay);
         _canShoot = true;
+    }
+
+    IEnumerator SpawnProjectileParent() {
+        Instantiate(_projectile, _projectileInstantiationLocation.position, _projectileInstantiationLocation.rotation *  Quaternion.Euler(0, Random.Range(-(100 - _accuracy), (100 -_accuracy)), 0));
+        muzzleFlashParticle.Play();
+        yield return new WaitForSeconds(0);
     }
 }

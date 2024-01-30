@@ -33,12 +33,14 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider collider) {
         if (collider.gameObject.tag == "Enemy") {
-            collider.gameObject.GetComponent<EnemyParameterController>().TakeDamage(_projectileDamage);
-            collider.gameObject.GetComponent<EnemyMovementController>().Knockback(_rigidbody.velocity.normalized * _knockbackForce);
-            _impactSource.PlayOneShot(_impactSource.clip);
-            _penetrationCount -= 1;
-            if(_penetrationCount == 0) {
-                Destroy(gameObject);
+            if(_penetrationCount > 0){
+                collider.gameObject.GetComponent<EnemyParameterController>().TakeDamage(_projectileDamage);
+                collider.gameObject.GetComponent<EnemyMovementController>().Knockback(_rigidbody.velocity.normalized * _knockbackForce);
+                _impactSource.PlayOneShot(_impactSource.clip);
+                _penetrationCount -= 1;
+                    if(_penetrationCount == 0) {
+                        Destroy(gameObject, _impactSource.clip.length);
+                    }
             }
         }
     }
