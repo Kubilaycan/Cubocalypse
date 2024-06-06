@@ -24,6 +24,7 @@ public class PlayerInputHandler : MonoBehaviour
     private Quaternion _aimRotation;
     private Vector3 _aimLookPoint;
     private float _shootValue;
+    private float _dashValue;
 
     private Transform _mainCameraTransform;
     
@@ -43,6 +44,9 @@ public class PlayerInputHandler : MonoBehaviour
 
         _playerInputActions.Controls.Shoot.performed += OnShootPerformed;
         _playerInputActions.Controls.Shoot.canceled += OnShootCancelled;
+
+        _playerInputActions.Controls.Dash.performed += OnDashPerformed;
+        _playerInputActions.Controls.Dash.canceled += OnDashCancelled;
     }
 
     void OnDisable() {
@@ -55,10 +59,14 @@ public class PlayerInputHandler : MonoBehaviour
 
         _playerInputActions.Controls.Shoot.performed -= OnShootPerformed;
         _playerInputActions.Controls.Shoot.canceled -= OnShootCancelled;
+
+        _playerInputActions.Controls.Dash.performed -= OnDashPerformed;
+        _playerInputActions.Controls.Dash.canceled -= OnDashCancelled;
     }
 
     void FixedUpdate() {
         _playerMovementController.MoveCharacter(_movementVector);
+        
         switch (_currentControlScheme) {
             case ControlSchemeEnum.KeyboardAndMouse:
                 _playerMovementController.RotateCharacter(_aimLookPoint);
@@ -67,8 +75,13 @@ public class PlayerInputHandler : MonoBehaviour
                 _playerMovementController.RotateCharacter(_aimRotation, _gamepadRotateSmoothing);
                 break;
         }
-        if(_shootValue > 0) {
+        
+        if (_shootValue > 0) {
             _playerWeaponController.ShootWeapon();
+        }
+
+        if (_dashValue > 0) {
+            _playerMovementController.Dash();
         }
     }
 
@@ -120,6 +133,14 @@ public class PlayerInputHandler : MonoBehaviour
 
     void OnShootCancelled(InputAction.CallbackContext context) {
         _shootValue = 0f;
+    }
+
+    void OnDashPerformed(InputAction.CallbackContext context) {
+        _dashValue = context.ReadValue<float>();
+    }
+
+    void OnDashCancelled(InputAction.CallbackContext context) {
+        _dashValue = 0f;
     }
 
     public void OnDeviceChange(PlayerInput pi) {

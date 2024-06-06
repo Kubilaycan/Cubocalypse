@@ -15,13 +15,37 @@ public class PlayerMovementController : MonoBehaviour
 
     private Vector3 _smoothDampVelocity = Vector3.zero;
 
+    #region Dash
+    private bool _isDashed = false;
+    private bool _currentlyDashing = false;
+    [SerializeField] private float _dashDuration = 0.1f;
+    private float _tempDashDuration;
+    [SerializeField] private float _dashCooldown = 1.0f;
+    [SerializeField] private float _dashSpeed = 10f;
+    [SerializeField] private Vector2 _lastMovementDirection;
+    #endregion
+
     private void Awake() {
         _mainCameraTransform = Camera.main.transform;
     }
     
     public void MoveCharacter(Vector2 direction)
     {
-        if(direction != Vector2.zero) {
+        if (_isDashed) {
+            if (!_currentlyDashing) {
+                _lastMovementDirection = direction;
+                _tempDashDuration = _dashDuration;
+                StartCoroutine(CurrentDashingCooldown());
+            }
+            if (_tempDashDuration >= 0) {
+                Vector3 moveForceVector = new Vector3(_lastMovementDirection.x , 0, _lastMovementDirection.y) * _dashSpeed;
+                moveForceVector = Quaternion.Euler(0, _mainCameraTransform.rotation.eulerAngles.y, 0) * moveForceVector;
+                _rigidBody.velocity = new Vector3(moveForceVector.x, _rigidBody.velocity.y, moveForceVector.z);
+                _tempDashDuration -= Time.fixedDeltaTime;
+            }
+        } 
+        
+        if (direction != Vector2.zero && !_currentlyDashing) {
             Vector3 moveForceVector = new Vector3(direction.x , 0, direction.y) * movementSpeed;
             moveForceVector = Quaternion.Euler(0, _mainCameraTransform.rotation.eulerAngles.y, 0) * moveForceVector;
             //_rigidBody.AddForce(moveForceVector, ForceMode.VelocityChange);
@@ -51,7 +75,23 @@ public class PlayerMovementController : MonoBehaviour
         transform.LookAt(heightCorrectedLookVector);
     }
 
+    public void Dash() {
+        StartCoroutine(DashCooldown());
+    }
+
     public void IncreaseMovementSpeedByPercentage(float value) {
         movementSpeed += movementSpeed * value / 100;
+    }
+
+    IEnumerator DashCooldown() {
+        _isDashed = true;
+        yield return new WaitForSeconds(_dashCooldown);
+        _isDashed = false;
+    }
+
+    IEnumerator CurrentDashingCooldown() {
+        _currentlyDashing = true;
+        yield return new WaitForSeconds(_dashDuration);
+        _currentlyDashing = false;
     }
 }
